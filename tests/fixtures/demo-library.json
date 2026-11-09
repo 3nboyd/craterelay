@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "tracks": [
+    {"id":"demo-01","title":"First Light","artist":"North Window","bpm":118.0,"key":"8A","genre":"House","energy":null,"duration_seconds":228,"path":"demo/first-light.mp3"},
+    {"id":"demo-02","title":"Side Room","artist":"Signal Garden","bpm":120.0,"key":"9A","genre":"House","energy":3,"duration_seconds":240,"path":"demo/side-room.mp3"},
+    {"id":"demo-03","title":"Side Room (Late Edit)","artist":"Signal Garden","bpm":122.0,"key":"9A","genre":"House","energy":4,"duration_seconds":206,"path":"demo/side-room-late-edit.mp3"},
+    {"id":"demo-04","title":"Paper Lanterns","artist":"Blue Switch","bpm":124.0,"key":"9B","genre":null,"energy":5,"duration_seconds":192,"path":"demo/paper-lanterns.mp3"},
+    {"id":"demo-05","title":"After the Rain","artist":"Blue Switch","bpm":null,"key":null,"genre":null,"energy":null,"duration_seconds":null,"path":null}
+  ]
+}
