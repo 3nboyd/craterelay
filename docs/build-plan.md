@@ -1,6 +1,6 @@
 # Build plan
 
-The goal is to get from a crate of local tracks to an editable, exact-length set. We can build and review the whole workflow with invented data before writing a parser or deciding what makes a good transition.
+The goal is to get from a curated crate of about 40 scanned tracks to an editable, exact-length set. We can build and review the whole workflow with invented data before writing a parser or deciding what makes a good transition.
 
 ## 1. Build the full UI with mock data
 
@@ -10,6 +10,8 @@ The goal is to get from a crate of local tracks to an editable, exact-length set
 - **Ready to move on when:** A demo user can load a crate, configure a set, move a track, lock it, regenerate from canned data and preview export. Mock results are labeled. Verify keyboard operation, a narrow layout and all error states.
 
 ## 2. Import real metadata
+
+Python is the default for the first engine. Its CSV and XML tooling and unit tests keep the adapter work small while the hash table, adjacency list, heap and search can still be implemented by hand. Keep the engine behind a normalized JSON request/response boundary. If the course calls for C, the browser can keep that contract while a C executable handles scoring and search. For a crate of about 40 tracks, benchmark the search and tune its candidate budget before choosing C for speed.
 
 Keep the normalized model small: stable track ID, source/native ID, title, artist, local path or URI, optional duration/BPM/wheel key/genre/energy, raw BPM/key, and warnings. Treat real export fields and optional user overrides as separate provenance. Return tracks, format, coverage counts and warnings from import. Start with VirtualDJ and use a handful of local tracks to compare displayed BPM/key; then add Rekordbox and verify Serato History CSV before committing to its schema. Use bounded XML/CSV reads and never follow a path from an import simply to parse metadata. No cloud requests or modification of DJ app libraries.
 

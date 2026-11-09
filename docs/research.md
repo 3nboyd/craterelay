@@ -1,5 +1,17 @@
 # Research notes
 
+## Import a selected crate
+
+The main workflow starts from one curated list of about 40 previously scanned tracks. Track analysis in the DJ app and metadata in the exported list are separate things.
+
+| File | What to expect |
+| --- | --- |
+| VirtualDJ My Lists XML / .vdjfolder | Ordered paths, with optional artist, title, length, BPM and key. A local read-only check found 38 entries across 10 nonempty lists. All 38 had paths and order indexes. Seven had BPM and key, and 16 had length. Use the list as the selection and enrich by path from a companion database where needed. [My Lists format](https://virtualdj.com/wiki/lists.html) |
+| VirtualDJ CSV, TXT and HTML | Text export choices for a selected list. Check the actual CSV header and whether paths, BPM and key survive the export before depending on them. [VirtualDJ export manual](https://autoupdate.virtualdj.com/manuals/virtualdj/appendix/export.html) |
+| Rekordbox collection XML | Playlist nodes reference collection rows by track key. Select one playlist and resolve its ordered IDs to rows with AverageBpm, Tonality and Location. Plain TXT and M3U8 are separate playlist exports with no BPM/key guarantee established here. [XML specification](https://cdn.rekordbox.com/files/20200410160904/xml_format_list.pdf) · [Rekordbox manual](https://cdn.rekordbox.com/files/20260409151936/rekordbox7.214_manual_EN.pdf) |
+| Serato CSV, TXT and M3U | These documented exports come from a played History session. The CSV header and key/BPM coverage still need a real sample. M3U points to audio paths and can omit manually inserted tracks. [Serato History](https://support.serato.com/hc/en-us/articles/223455687-History) |
+| Generic M3U/M3U8 | Treat it as an ordered path list, with display information where present. Resolve analysis from companion metadata. Preserve relative paths against the playlist directory and report missing or ambiguous matches. |
+
 ## Import sources
 
 | Source | What the documentation supports | Decision |
@@ -21,6 +33,6 @@ BPM is useful for a tempo curve. Energy is a separate measurement and should com
 
 ## Related work and stack
 
-[DJ Crate](https://github.com/hacksics/dj-crate) describes local analysis and energy-arc set building; [CueKey](https://github.com/Supercarlillos/cuekey) provides local track analysis and Rekordbox workflows; [Rekordbox Setlist Builder](https://github.com/zachdissington/rekordbox-setlist-builder) also orders tracks harmonically. CrateContour's focus is on existing metadata across DJ apps, fixed track positions, and explaining why a set was chosen.
+[DJ Crate](https://github.com/hacksics/dj-crate) describes local analysis and energy-arc set building; [CueKey](https://github.com/Supercarlillos/cuekey) provides local track analysis and Rekordbox workflows; [Rekordbox Setlist Builder](https://github.com/zachdissington/rekordbox-setlist-builder) also orders tracks harmonically. Crate Relay's focus is on existing metadata across DJ apps, fixed track positions, and explaining why a set was chosen.
 
 Start with semantic HTML, CSS, vanilla JavaScript, and an SVG plot. It is easy to prototype using fake data without bundling or involving the optimizer. Keep the algorithms in a plain Python package so they can run from unit tests and a command line. Python's [CSV reader](https://docs.python.org/3/library/csv.html) is enough for tabular imports. Evaluate a hardened XML parser and input limits before opening user exports; see [Python's XML security notes](https://docs.python.org/3/library/xml.html#xml-vulnerabilities). Later, [FastAPI](https://fastapi.tiangolo.com/tutorial/request-files/) is a candidate for a loopback-only API and local file imports. No UI framework, cloud account, audio analysis, or data science dependency is needed for the first pass.

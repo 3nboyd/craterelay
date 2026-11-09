@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cratecontour"
+name = "craterelay"
 version = "0.0.1"
 description = "Local set planning for DJs"
 readme = "README.md"

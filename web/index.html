@@ -1,14 +1,106 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CrateContour</title>
-  </head>
-  <body>
-    <main>
-      <h1>CrateContour</h1>
-      <p>A local DJ set planner. The workspace is coming in the next build.</p>
-    </main>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101117">
+  <title>Crate Relay</title>
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="./"><img src="logo.svg" alt="" width="34" height="34"><span>crate<span class="accent">relay</span></span></a>
+    <div class="top-actions">
+      <span class="demo-tag"><i></i> Demo workspace</span>
+      <button id="open-import" class="button" data-icon="upload">Import crate</button>
+    </div>
+  </header>
+  <main>
+    <section class="workspace-head" aria-labelledby="set-title">
+      <div><div class="eyebrow">WORKSPACE / 01</div><h1 id="set-title">After Hours</h1></div>
+      <div class="head-actions">
+        <button id="undo" class="icon-button" data-icon="undo" title="Undo last change" aria-label="Undo last change" disabled></button>
+        <button id="open-export" class="button" data-icon="download">Export</button>
+        <button id="generate" class="button primary" data-icon="spark">Generate draft</button>
+      </div>
+    </section>
+    <div class="workspace">
+      <div class="draft">
+        <section class="panel profile" aria-labelledby="profile-title">
+          <div class="panel-head">
+            <div><div class="eyebrow">SET PROFILE</div><h2 id="profile-title">Tempo curve</h2></div>
+            <div class="segments" aria-label="Chart metric"><button data-metric="bpm" aria-pressed="true">BPM</button><button data-metric="energy" aria-pressed="false">Energy</button></div>
+          </div>
+          <div id="chart"></div>
+          <div class="legend"><span><i></i><span id="legend-metric">Draft BPM</span></span><span id="target-legend"><i class="dashed"></i>Target</span><span><i class="diamond"></i>Locked</span></div>
+        </section>
+        <section class="panel sequence" aria-labelledby="sequence-title">
+          <div class="panel-head">
+            <div class="section-title"><h2 id="sequence-title">Set order</h2><span id="order-count" class="count"></span></div>
+            <button class="icon-button" id="open-help" data-icon="info" title="Set order controls" aria-label="Set order controls"></button>
+          </div>
+          <div class="order-labels" aria-hidden="true"><span>#</span><span>TRACK</span><span>BPM</span><span>KEY</span><span></span></div>
+          <ol id="sequence"></ol>
+        </section>
+      </div>
+      <aside>
+        <section class="panel settings" aria-labelledby="settings-title">
+          <div class="panel-head"><h2 id="settings-title">Set controls</h2><span class="panel-icon" data-icon="sliders" aria-hidden="true"></span></div>
+          <form id="targets">
+            <div class="fields">
+              <label>Tracks<input id="length" type="number" required min="1" max="40" value="12"></label>
+              <label>Start BPM<input id="start" type="number" required min="1" max="300" value="117"></label>
+              <label>End BPM<input id="end" type="number" required min="1" max="300" value="132"></label>
+            </div>
+            <div id="checkpoints"></div>
+            <button id="add-checkpoint" type="button" class="quiet" data-icon="plus">Tempo checkpoint</button>
+          </form>
+          <div class="anchor-bar"><span data-icon="lock">Anchors <span id="lock-count" class="count"></span></span><button class="icon-button" id="open-anchor" data-icon="plus" title="Add anchor" aria-label="Add anchor"></button></div>
+          <div id="anchors"></div>
+        </section>
+        <section class="panel crate" aria-labelledby="crate-title">
+          <div class="panel-head"><div class="section-title"><h2 id="crate-title">Crate</h2><span class="count">40</span></div><button id="coverage" class="icon-button" data-icon="info" title="Demo metadata coverage" aria-label="Demo metadata coverage"></button></div>
+          <div class="crate-tools">
+            <label class="search"><span data-icon="search" aria-hidden="true"></span><input id="search" type="search" aria-label="Search crate" placeholder="Search tracks"></label>
+            <select id="genre" aria-label="Filter by genre"><option value="">All genres</option></select>
+          </div>
+          <div class="crate-labels"><button data-sort="title">TRACK</button><button data-sort="bpm">BPM</button><button data-sort="key">KEY</button><span></span></div>
+          <ul id="crate"></ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <div id="notice" role="status" aria-live="polite"></div>
+  <dialog id="import-dialog">
+    <div class="dialog-head"><h2>Import crate</h2><button data-close class="icon-button" data-icon="close" aria-label="Close"></button></div>
+    <label for="source">Source</label>
+    <select id="source"><option value="vdj">VirtualDJ · My Lists</option><option value="rb">Rekordbox · XML collection</option><option value="serato">Serato · History CSV</option><option value="m3u">M3U / M3U8</option></select>
+    <label class="drop" id="drop"><span data-icon="upload" aria-hidden="true"></span><strong id="file-label">Drop a list or browse</strong><input id="file" type="file" aria-label="Choose crate file"></label>
+    <label id="companion-label">VirtualDJ database <span class="muted">· optional</span><input id="companion" type="file" accept=".xml"></label>
+    <details><summary>Format details</summary><p id="format-details"></p></details>
+    <p id="import-status" role="status">Preview mode. File parsing comes in the next phase.</p>
+    <button id="load-demo" class="button primary">Open demo crate</button>
+  </dialog>
+  <dialog id="anchor-dialog">
+    <div class="dialog-head"><h2>Pin a track</h2><button data-close class="icon-button" data-icon="close" aria-label="Close"></button></div>
+    <form id="anchor-form">
+      <label>Track<select id="anchor-track"></select></label>
+      <label>Position<input type="number" id="anchor-slot" min="1" required></label>
+      <p id="anchor-error" role="status"></p>
+      <button class="button primary" data-icon="lock">Pin track</button>
+    </form>
+  </dialog>
+  <dialog id="export-dialog">
+    <div class="dialog-head"><h2>Export preview</h2><button data-close class="icon-button" data-icon="close" aria-label="Close"></button></div>
+    <div class="segments"><button data-export="csv" aria-pressed="true">CSV</button><button data-export="m3u8" aria-pressed="false">M3U8</button></div>
+    <pre id="export-preview"></pre>
+    <button id="download" class="button primary" data-icon="download">Download demo file</button>
+  </dialog>
+  <dialog id="info-dialog">
+    <div class="dialog-head"><h2 id="info-title"></h2><button data-close class="icon-button" data-icon="close" aria-label="Close"></button></div>
+    <p id="info-content"></p>
+  </dialog>
+</body>
 </html>
